@@ -69,10 +69,4 @@ public class HashClassTest {
         Random r = new Random();
         return Long.toHexString(r.nextLong());
     }
-
-    private static byte[] IV = new byte[]{(byte)0,(byte)1,(byte)2};
-
-    public void encrypt(String message) throws Exception {
-
-        IvParameterSpec ivSpec = new IvParameterSpec(IV);}
 }
