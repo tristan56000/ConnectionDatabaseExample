@@ -1,11 +1,7 @@
 package fr.ensibs.database;
 
-import javax.crypto.spec.IvParameterSpec;
-import java.beans.XMLDecoder;
-import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Random;
 
 public class HashClassTest {
 
@@ -50,17 +46,7 @@ public class HashClassTest {
                 System.out.println(resultSet2.getString("hash"));
             }
 
-            Runtime r = Runtime.getRuntime();
-            r.exec("/bin/sh -c some_tool" + "");
-
-            XMLDecoder d = new XMLDecoder(System.in);
-            try {
-                Object result = d.readObject();
-            }catch (Exception e){
-
-            }
-
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
