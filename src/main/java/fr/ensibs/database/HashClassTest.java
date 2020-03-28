@@ -1,52 +1,70 @@
 package fr.ensibs.database;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
+/**
+ * Class having a main method which will get all the entry of a table and hash them with SHA2
+ * The point is two distinct entries have two distinct hashes
+ */
 public class HashClassTest {
 
+    /**
+     * Prints a usage message and exits
+     */
+    private static void usage(){
+        System.out.println("Usage: ConnectDatabaseExample <dbmsUser> <userPassword> <databaseName> <table>");
+        System.exit(-1);
+    }
+
+    /**
+     * Main method of the class
+     * @param args see usage
+     */
     public static void main(String[] args) {
-        if(args.length != 2){
-            System.exit(-1);
+        if(args.length != 4){
+            usage();
         }
-        String db = args[0];
-        String table = args[1];
+        String user = args[0];String password = args[1];
+        String db = args[2];String table = args[3];
         String url = "jdbc:mysql://localhost:3306/"+db+"?autoReconnect=true&useSSL=false&serverTimezone=Europe/Paris";
-        String user= "PHILIPPE";
-        String password = "mysql";
         try{
             ArrayList<String> colums = new ArrayList<>();
-
+            Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection = DriverManager.getConnection(url,user,password);
-            Statement statement = connection.createStatement();
-
             /*
-            Query getting all the columns from the given table
+            Query getting all the columns from the given table of the database
              */
-            String sql1 = "select column_name from information_schema.columns where table_name = \'"+table+"\'";
-            ResultSet resultSet1 = statement.executeQuery(sql1);
-
+            String sql1 = "select column_name from information_schema.COLUMNS where TABLE_NAME = ?";
+            PreparedStatement preparedStatement1 = connection.prepareStatement(sql1);
+            preparedStatement1.setString(1,table);
+            ResultSet resultSet1 = preparedStatement1.executeQuery();
             while(resultSet1.next()){
                 colums.add(resultSet1.getString("column_name"));
             }
-
+            /*
+            The point is that the value of a column for an entry will be concatenated with its column's name
+            Afterward, all values+name are concatenated together for each entry, and this final concatenation
+            is hashed through SHA2
+             */
             String pre ="";
             for (String column: colums) {
                 pre = pre + "\'"+column+"\',"+"ifnull("+column+",\'\'),";
             }
-
             pre = pre.substring(0,pre.length()-1);
-
-            String sql2 = "select sha2(concat("+pre+"),256) as hash from "+db+"."+table;
-
-            System.out.println("Hash");
+            String sql2 = "SELECT SHA2(CONCAT("+pre+"),256) AS HASH FROM "+db+"."+table;
+            System.out.println("HASH");
+            Statement statement = connection.createStatement();
             ResultSet resultSet2 = statement.executeQuery(sql2);
-
             while(resultSet2.next()){
-                System.out.println(resultSet2.getString("hash"));
+                System.out.println(resultSet2.getString("HASH"));
             }
-
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
