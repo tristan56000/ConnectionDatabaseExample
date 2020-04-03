@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Class having a main method which will get all the entry of a table and hash them with SHA2
@@ -67,5 +68,10 @@ public class HashClassTest {
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    String generateSecretToken() {
+        Random r = new Random();
+        return Long.toHexString(r.nextLong());
     }
 }
