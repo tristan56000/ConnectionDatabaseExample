@@ -1,5 +1,6 @@
 package fr.ensibs.database;
 
+import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
@@ -7,7 +8,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * Class having a main method which will get all the entry of a table and hash them with SHA2
@@ -71,7 +71,7 @@ public class HashClassTest {
     }
 
     String generateSecretToken() {
-        Random r = new Random();
+        SecureRandom r = new SecureRandom();
         return Long.toHexString(r.nextLong());
     }
 }
