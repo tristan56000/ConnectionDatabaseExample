@@ -1,6 +1,5 @@
 package fr.ensibs.database;
 
-import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
@@ -68,10 +67,5 @@ public class HashClassTest {
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-    }
-
-    String generateSecretToken() {
-        SecureRandom r = new SecureRandom();
-        return Long.toHexString(r.nextLong());
     }
 }
